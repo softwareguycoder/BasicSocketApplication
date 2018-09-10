@@ -21,9 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{79B86E3C-537E-44D6-9956-4F8D681CC91A}</ProjectGuid>
-    <RootNamespace>BasicSocketApplication</RootNamespace>
+    <RootNamespace>BasicSocketApplication_Server</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
-    <ProjectName>BasicSocketApplication_Server</ProjectName>
+    <ProjectName>BasicSocketApplication_Server_Server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
