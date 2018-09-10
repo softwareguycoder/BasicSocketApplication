@@ -114,5 +114,9 @@ int _cdecl main(int argc, char *argv[]) {
 			printf("recv failed: %d\n", WSAGetLastError());
 	} while (iResult > 0);
 
+	// cleanup
+	closesocket(ConnectSocket);
+	WSACleanup();
+
 	return iResult;
 }
