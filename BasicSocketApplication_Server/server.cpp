@@ -1,3 +1,7 @@
+// This is a sample from the Microsoft site that I stepped throught the tutorial with, so I could
+// brush up on Windows Sockets programming concepts.
+//
+
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
