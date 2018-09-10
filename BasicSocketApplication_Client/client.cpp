@@ -10,6 +10,7 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 #define DEFAULT_PORT "27015"
+#define DEFAULT_BUFLEN 512
 
 int _cdecl main(int argc, char *argv[]) {
 	WSADATA wsaData;
@@ -17,6 +18,12 @@ int _cdecl main(int argc, char *argv[]) {
 	SOCKET ConnectSocket = INVALID_SOCKET;
 
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
+
+
+	int recvbuflen = DEFAULT_BUFLEN;
+
+	char *sendbuf = "this is a test";
+	char recvbuf[DEFAULT_BUFLEN];
 
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -75,7 +82,37 @@ int _cdecl main(int argc, char *argv[]) {
 		return 1;
 	}
 
+	// Send an initial buffer
+	iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
+	if (iResult == SOCKET_ERROR) {
+		printf("send failed: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		return 1;
+	}
 
+	printf("Bytes Sent: %ld\n", iResult);
+
+	// shutdown the connection for sending since no more data will be sent
+	// the client can still use the ConnectSocket for receiving data
+	iResult = shutdown(ConnectSocket, SD_SEND);
+	if (iResult == SOCKET_ERROR) {
+		printf("shutdown failed: %d\n", WSAGetLastError());
+		closesocket(ConnectSocket);
+		WSACleanup();
+		return 1;
+	}
+
+	// Receive data until the server closes the connection
+	do {
+		iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
+		if (iResult > 0)
+			printf("Bytes received: %d\n", iResult);
+		else if (iResult == 0)
+			printf("Connection closed\n");
+		else
+			printf("recv failed: %d\n", WSAGetLastError());
+	} while (iResult > 0);
 
 	return iResult;
 }
