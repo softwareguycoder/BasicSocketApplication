@@ -22,7 +22,7 @@ int _cdecl main() {
 	auto ListenSocket = INVALID_SOCKET;
 	auto ClientSocket = INVALID_SOCKET;
 
-	struct addrinfo *pAddrInfo = nullptr;
+	PADDRINFOA pAddrInfo = nullptr;
 
 	auto nBytesSent = 0;
 	char recvbuf[DEFAULT_BUFLEN];
