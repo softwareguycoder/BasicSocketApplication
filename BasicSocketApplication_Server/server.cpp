@@ -27,9 +27,9 @@ bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, int* p_result)
 
 	*p_result = WSAStartup(MAKEWORD(2, 2), p_wsa_data);
 	if (*p_result != 0) {
-		log_error("main: WSAStartup failed: %d", *p_result);
+		log_error("initialize_winsock: WSAStartup failed: %d", *p_result);
 
-		log_debug("main: Done.");
+		log_debug("initialize_winsock: Done.");
 
 		return false;
 	}
