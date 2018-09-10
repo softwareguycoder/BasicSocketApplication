@@ -40,6 +40,7 @@ int _cdecl main() {
 	}
 
 	SOCKET ListenSocket = INVALID_SOCKET;
+	SOCKET ClientSocket = INVALID_SOCKET;
 
 	// Create a SOCKET for the server to listen for client connections
 
@@ -71,6 +72,14 @@ int _cdecl main() {
 		return 1;
 	}
 
+	// Accept a client socket
+	ClientSocket = accept(ListenSocket, NULL, NULL);
+	if (ClientSocket == INVALID_SOCKET) {
+		printf("accept failed: %d\n", WSAGetLastError());
+		closesocket(ListenSocket);
+		WSACleanup();
+		return 1;
+	}
 
 
 	return iResult;
