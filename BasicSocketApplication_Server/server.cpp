@@ -24,7 +24,6 @@ int _cdecl main() {
 
 	PADDRINFOA pAddrInfo = nullptr;
 
-	auto nBytesSent = 0;
 	char recvbuf[DEFAULT_BUFLEN];
 
 	log_debug("main: Initializing the Winsock stack...");
@@ -77,7 +76,9 @@ int _cdecl main() {
 
 	log_debug("main: Attempting to receive data...");
 
+	// ReSharper disable CppInitializedValueIsAlwaysRewritten
 	auto nBytesReceived = 0;
+	// ReSharper restore CppInitializedValueIsAlwaysRewritten
 
 	// Receive until the peer shuts down the connection
 	do {
@@ -96,7 +97,7 @@ int _cdecl main() {
 
 			log_debug("main: Echoing what we received right back to the client...");
 
-			nBytesSent = send(ClientSocket, recvbuf, nBytesReceived, 0);
+			const auto nBytesSent = send(ClientSocket, recvbuf, nBytesReceived, 0);
 
 			log_debug("main: Checking for errors...");
 
