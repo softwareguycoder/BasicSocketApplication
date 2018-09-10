@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicSocketApplication_Serv
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BasicSocketApplication_Client", "BasicSocketApplication_Client\BasicSocketApplication_Client.vcxproj", "{814D9A23-9301-464F-BA24-FA568CAF21C1}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JQR.Debug.Core", "..\JQR.Debug.Core\JQR.Debug.Core\JQR.Debug.Core.vcxproj", "{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{814D9A23-9301-464F-BA24-FA568CAF21C1}.Release|x64.Build.0 = Release|x64
 		{814D9A23-9301-464F-BA24-FA568CAF21C1}.Release|x86.ActiveCfg = Release|Win32
 		{814D9A23-9301-464F-BA24-FA568CAF21C1}.Release|x86.Build.0 = Release|Win32
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Debug|x64.ActiveCfg = Debug|x64
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Debug|x64.Build.0 = Debug|x64
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Debug|x86.ActiveCfg = Debug|Win32
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Debug|x86.Build.0 = Debug|Win32
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Release|x64.ActiveCfg = Release|x64
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Release|x64.Build.0 = Release|x64
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Release|x86.ActiveCfg = Release|Win32
+		{A58A08A4-F0FA-41F5-83C0-816D5CC4613D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
