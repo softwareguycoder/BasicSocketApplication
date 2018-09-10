@@ -21,7 +21,7 @@ int _cdecl main(int argc, char *argv[]) {
 	auto ConnectSocket = INVALID_SOCKET;
 	struct addrinfo *result = nullptr,
 	                hints{};
-	char *sendbuf = "this is a test";
+	const char *sendbuf = "this is a test";
 	char recvbuf[DEFAULT_BUFLEN];
 	const auto recvbuflen = DEFAULT_BUFLEN;
 
