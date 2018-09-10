@@ -15,10 +15,16 @@
 
 int _cdecl main() {
 	WSADATA wsaData;
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
+	int iResult;
 
+	SOCKET ListenSocket = INVALID_SOCKET;
+	SOCKET ClientSocket = INVALID_SOCKET;
+
+	struct addrinfo *result = NULL;
+	struct addrinfo hints;
+
+	int iSendResult = 0;
 	char recvbuf[DEFAULT_BUFLEN];
-	int iResult = 0, iSendResult = 0;
 	int recvbuflen = DEFAULT_BUFLEN;
 
 	// Initialize Winsock
@@ -34,23 +40,18 @@ int _cdecl main() {
 	hints.ai_protocol = IPPROTO_TCP;
 	hints.ai_flags = AI_PASSIVE;
 
-	// Resolve the local address and port to be used by the server
+	// Resolve the server address and port
 	iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
 	if (iResult != 0) {
-		printf("getaddrinfo failed: %d\n", iResult);
+		printf("getaddrinfo failed with error: %d\n", iResult);
 		WSACleanup();
 		return 1;
 	}
 
-	SOCKET ListenSocket = INVALID_SOCKET;
-	SOCKET ClientSocket = INVALID_SOCKET;
-
-	// Create a SOCKET for the server to listen for client connections
-
+	// Create a SOCKET for connecting to server
 	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-
 	if (ListenSocket == INVALID_SOCKET) {
-		printf("Error at socket(): %ld\n", WSAGetLastError());
+		printf("socket failed with error: %ld\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
 		return 1;
@@ -68,8 +69,9 @@ int _cdecl main() {
 
 	freeaddrinfo(result);
 
-	if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) {
-		printf("Listen failed with error: %ld\n", WSAGetLastError());
+	iResult = listen(ListenSocket, SOMAXCONN);
+	if (iResult == SOCKET_ERROR) {
+		printf("listen failed with error: %d\n", WSAGetLastError());
 		closesocket(ListenSocket);
 		WSACleanup();
 		return 1;
@@ -89,6 +91,7 @@ int _cdecl main() {
 
 	// Receive until the peer shuts down the connection
 	do {
+
 		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 		if (iResult > 0) {
 			printf("Bytes received: %d\n", iResult);
@@ -96,7 +99,7 @@ int _cdecl main() {
 			// Echo the buffer back to the sender
 			iSendResult = send(ClientSocket, recvbuf, iResult, 0);
 			if (iSendResult == SOCKET_ERROR) {
-				printf("send failed: %d\n", WSAGetLastError());
+				printf("send failed with error: %d\n", WSAGetLastError());
 				closesocket(ClientSocket);
 				WSACleanup();
 				return 1;
@@ -106,17 +109,18 @@ int _cdecl main() {
 		else if (iResult == 0)
 			printf("Connection closing...\n");
 		else {
-			printf("recv failed: %d\n", WSAGetLastError());
+			printf("recv failed with error: %d\n", WSAGetLastError());
 			closesocket(ClientSocket);
 			WSACleanup();
 			return 1;
 		}
+
 	} while (iResult > 0);
 
-	// shutdown the send half of the connection since no more data will be sent
+	// shutdown the connection since we're done
 	iResult = shutdown(ClientSocket, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
-		printf("shutdown failed: %d\n", WSAGetLastError());
+		printf("shutdown failed with error: %d\n", WSAGetLastError());
 		closesocket(ClientSocket);
 		WSACleanup();
 		return 1;
