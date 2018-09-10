@@ -12,7 +12,9 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "JQR.Debug.Core.h"
+extern "C" {
+	#include "JQR.Debug.Core.h"
+}
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
 #pragma comment (lib, "Ws2_32.lib")
@@ -23,6 +25,8 @@
 #define DEFAULT_PORT "27015"
 
 int _cdecl main(const int argc, char *argv[]) {
+	log_debug("In main");
+
 	WSADATA wsa_data;
 	auto connect_socket = INVALID_SOCKET;
 	struct addrinfo *result = nullptr,

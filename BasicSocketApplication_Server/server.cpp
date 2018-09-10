@@ -11,7 +11,10 @@
 #include <ws2tcpip.h>
 #include <cstdio>
 
-#include "JQR.Debug.Core.h"
+extern "C" {
+	#include "JQR.Debug.Core.h"
+}
+
 
 #pragma comment(lib, "Ws2_32.lib")
 
