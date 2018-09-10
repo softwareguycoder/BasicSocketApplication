@@ -5,7 +5,7 @@
 #include <windows.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
-#include <stdio.h>
+#include <cstdio>
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -13,22 +13,20 @@
 #define DEFAULT_BUFLEN 512
 
 int _cdecl main(int argc, char *argv[]) {
-	WSADATA wsaData;
-	int iResult;
-	SOCKET ConnectSocket = INVALID_SOCKET;
+	WSADATA wsa_data;
+	auto connect_socket = INVALID_SOCKET;
 
-	struct addrinfo *result = NULL, *ptr = NULL, hints;
+	struct addrinfo *result = NULL, hints{};
 
-
-	int recvbuflen = DEFAULT_BUFLEN;
+	const auto recvbuflen = DEFAULT_BUFLEN;
 
 	char *sendbuf = "this is a test";
 	char recvbuf[DEFAULT_BUFLEN];
 
 	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		printf("WSAStartup failed: %d\n", iResult);
+	auto i_result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
+	if (i_result != 0) {
+		printf("WSAStartup failed: %d\n", i_result);
 		return 1;
 	}
 
@@ -38,24 +36,24 @@ int _cdecl main(int argc, char *argv[]) {
 	hints.ai_protocol = IPPROTO_TCP;
 
 	// Resolve the server address and port
-	iResult = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
-	if (iResult != 0) {
-		printf("getaddrinfo failed: %d\n", iResult);
+	i_result = getaddrinfo(argv[1], DEFAULT_PORT, &hints, &result);
+	if (i_result != 0) {
+		printf("getaddrinfo failed: %d\n", i_result);
 		WSACleanup();
 		return 1;
 	}
 
 	// Attempt to connect to the first address returned by
 	// the call to getaddrinfo
-	ptr = result;
+	struct addrinfo* ptr = result;
 
 	// Create a SOCKET for connecting to server
-	ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype,
+	connect_socket = socket(ptr->ai_family, ptr->ai_socktype,
 		ptr->ai_protocol);
 
 	// Check for errors to ensure that the ConnectSocket is a 
 	// valid socket.
-	if (ConnectSocket == INVALID_SOCKET) {
+	if (connect_socket == INVALID_SOCKET) {
 		printf("Error at socket(): %d\n", WSAGetLastError());
 		freeaddrinfo(result);
 		WSACleanup();
@@ -63,10 +61,10 @@ int _cdecl main(int argc, char *argv[]) {
 	}
 
 	// Connect to server.
-	iResult = connect(ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
-	if (iResult == SOCKET_ERROR) {
-		closesocket(ConnectSocket);
-		ConnectSocket = INVALID_SOCKET;
+	i_result = connect(connect_socket, ptr->ai_addr, (int)ptr->ai_addrlen);
+	if (i_result == SOCKET_ERROR) {
+		closesocket(connect_socket);
+		connect_socket = INVALID_SOCKET;
 	}
 
 	// Should really try the next address returned by getaddrinfo
@@ -76,47 +74,47 @@ int _cdecl main(int argc, char *argv[]) {
 
 	freeaddrinfo(result);
 
-	if (ConnectSocket == INVALID_SOCKET) {
+	if (connect_socket == INVALID_SOCKET) {
 		printf("Unable to connect to server!\n");
 		WSACleanup();
 		return 1;
 	}
 
 	// Send an initial buffer
-	iResult = send(ConnectSocket, sendbuf, (int)strlen(sendbuf), 0);
-	if (iResult == SOCKET_ERROR) {
+	i_result = send(connect_socket, sendbuf, (int)strlen(sendbuf), 0);
+	if (i_result == SOCKET_ERROR) {
 		printf("send failed: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
+		closesocket(connect_socket);
 		WSACleanup();
 		return 1;
 	}
 
-	printf("Bytes Sent: %ld\n", iResult);
+	printf("Bytes Sent: %d\n", i_result);
 
 	// shutdown the connection for sending since no more data will be sent
 	// the client can still use the ConnectSocket for receiving data
-	iResult = shutdown(ConnectSocket, SD_SEND);
-	if (iResult == SOCKET_ERROR) {
+	i_result = shutdown(connect_socket, SD_SEND);
+	if (i_result == SOCKET_ERROR) {
 		printf("shutdown failed: %d\n", WSAGetLastError());
-		closesocket(ConnectSocket);
+		closesocket(connect_socket);
 		WSACleanup();
 		return 1;
 	}
 
 	// Receive data until the server closes the connection
 	do {
-		iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-		if (iResult > 0)
-			printf("Bytes received: %d\n", iResult);
-		else if (iResult == 0)
+		i_result = recv(connect_socket, recvbuf, recvbuflen, 0);
+		if (i_result > 0)
+			printf("Bytes received: %d\n", i_result);
+		else if (i_result == 0)
 			printf("Connection closed\n");
 		else
 			printf("recv failed: %d\n", WSAGetLastError());
-	} while (iResult > 0);
+	} while (i_result > 0);
 
 	// cleanup
-	closesocket(ConnectSocket);
+	closesocket(connect_socket);
 	WSACleanup();
 
-	return iResult;
+	return i_result;
 }
