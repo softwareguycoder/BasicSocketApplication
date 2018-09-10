@@ -20,6 +20,6 @@
  * will point to an error code which is an integer value other than zero.
  * \remarks This function must be called prior to any other Winsock calls!
  */
-bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, int* p_result);
+bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, PINT p_result);
 
 #endif //__SERVER_H__

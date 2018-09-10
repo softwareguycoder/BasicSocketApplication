@@ -10,7 +10,7 @@ extern "C" {
 
 #pragma comment(lib, "Ws2_32.lib")
 
-bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, int* p_result)
+bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, PINT p_result)
 {
 	log_debug("In initialize_winsock");
 
