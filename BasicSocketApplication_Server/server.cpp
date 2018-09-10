@@ -2,7 +2,7 @@
 // brush up on Windows Sockets programming concepts.
 //
 
-#include "server.h"
+#include "Socket.h"
 
 extern "C" {
 #include "JQR.Debug.Core.h"
@@ -10,174 +10,144 @@ extern "C" {
 
 #pragma comment(lib, "Ws2_32.lib")
 
-bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, PINT p_result)
-{
-	log_debug("In initialize_winsock");
-
-	log_debug("initialize_winsock: Checking inputs...");
-
-	// Input validation -- both the passed pointers must have valid addresses
-	if (p_wsa_data == nullptr)
-		return false;
-
-	if (p_result == nullptr)
-		return false;
-
-	log_debug("initialize_winsock: Input checks passed.  Calling WSAStartup...");
-
-	*p_result = WSAStartup(MAKEWORD(2, 2), p_wsa_data);
-	if (*p_result != 0) {
-		log_error("initialize_winsock: WSAStartup failed: %d", *p_result);
-
-		log_debug("initialize_winsock: Done.");
-
-		return false;
-	}
-
-	log_debug("initialize_winsock: The operation completed successfully.");
-
-	log_debug("initialize_winsock: Done.");
-
-	return true;
-}
-
 int _cdecl main() {
 	log_debug("In main");
 
-	auto i_result = 0;
+	// Default return value in case something goes sideways
+	auto nResult = 1;
 
-	WSADATA wsa_data;
-	ZeroMemory(&wsa_data, sizeof(wsa_data));
+	WSADATA wsaData;
+	ZeroMemory(&wsaData, sizeof(wsaData));
 
-	auto listen_socket = INVALID_SOCKET;
-	auto client_socket = INVALID_SOCKET;
+	auto ListenSocket = INVALID_SOCKET;
+	auto ClientSocket = INVALID_SOCKET;
 
-	struct addrinfo *result = nullptr;
-	struct addrinfo hints {};
+	struct addrinfo *pAddrInfo = nullptr;
 
-	auto i_send_result = 0;
+	auto nBytesSent = 0;
 	char recvbuf[DEFAULT_BUFLEN];
-	const auto recvbuflen = DEFAULT_BUFLEN;
 
 	log_debug("main: Initializing the Winsock stack...");
 
-	if (!initialize_winsock(&wsa_data, &i_result))
-		return i_result;
+	if (!InitializeWinsock(&wsaData, &nResult))
+		return nResult;
 
 	log_debug("main: Winsock stack has been initialized.");
 
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
+	log_debug("main: Attempting to resolve an IP address for the server...");
 
-	// Resolve the server address and port
-	i_result = getaddrinfo(nullptr, DEFAULT_PORT, &hints, &result);
-	if (i_result != 0) {
-		log_error("main: getaddrinfo failed with error: %d\n", i_result);
-		WSACleanup();
-		return 1;
-	}
+	if (!ResolveServerAddress(DEFAULT_PORT, &pAddrInfo, &nResult))
+		return nResult;
 
-	// Create a SOCKET for connecting to server
-	listen_socket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (listen_socket == INVALID_SOCKET) {
-		log_error("main: socket failed with error: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
-		WSACleanup();
-		return 1;
-	}
+	log_debug("main: The server's IP address has been resolved.");
 
-	// Setup the TCP listening socket
-	i_result = bind(listen_socket, result->ai_addr, (int)result->ai_addrlen);
-	if (i_result == SOCKET_ERROR) {
-		log_error("main: bind failed with error: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
-		closesocket(listen_socket);
-		WSACleanup();
-		return 1;
-	}
+	log_debug("main: Attempting to create the server socket endpoint...");
 
-	freeaddrinfo(result);
+	if (!CreateServerSocket(pAddrInfo, &ListenSocket, &nResult))
+		return nResult;
 
-	i_result = listen(listen_socket, SOMAXCONN);
-	if (i_result == SOCKET_ERROR) {
-		log_error("main: listen failed with error: %d\n", WSAGetLastError());
-		closesocket(listen_socket);
-		WSACleanup();
-		return 1;
-	}
+	log_debug("main: Server socket endpoint successfully created.");
 
-	// Accept a client socket
-	client_socket = accept(listen_socket, nullptr, nullptr);
-	if (client_socket == INVALID_SOCKET) {
-		log_error("main: accept failed: %d\n", WSAGetLastError());
-		closesocket(listen_socket);
-		WSACleanup();
-		return 1;
-	}
+	log_debug("main: Attempting to bind the server socket to the endpoint...");
+
+	if (!BindServerSocket(&ListenSocket, pAddrInfo, &nResult))
+		return nResult;
+
+	log_debug("main: The server listening socket is now bound to the endpoint.");
+
+	log_debug("main: Setting up the server to listen for incoming connections...");
+
+	if (!Listen(&ListenSocket, &nResult))
+		return nResult;
+
+	log_debug("main: The setup for listening for incoming connections is complete.");
+
+	log_debug("main: Waiting for new client connections...");
+	
+	if (!AcceptClientConnection(&ListenSocket, &ClientSocket, &nResult))
+		return nResult;
 
 	log_info("main: Connection has been made to us by a client.");
 
 	log_debug("main: Throwing away the listening socket...");
 
-	// No longer need server socket
-	closesocket(listen_socket);
+	CloseSocket(ListenSocket);
 
-	log_debug("main: Listening socket has been closed.");
+	log_debug("main: System resources consumed by the listening socket have been released.");
 
 	log_debug("main: Attempting to receive data...");
 
+	auto nBytesReceived = 0;
+
 	// Receive until the peer shuts down the connection
 	do {
-		i_result = recv(client_socket, recvbuf, recvbuflen, 0);
+		log_debug("main: Calling Receive function...");
 
-		log_debug("main: i_result = %d", i_result);
+		nBytesReceived = Receive(ClientSocket, recvbuf, DEFAULT_BUFLEN);
 
-		if (i_result > 0) {
-			log_debug("main: Bytes received: %d\n", i_result);
+		log_debug("main: Result of 'Receive' function call: %d", nBytesReceived);
+
+		if (nBytesReceived > 0) {
+			log_debug("main: nBytesRecived > 0, this means we got something");
+
+			log_debug("main: Bytes received: %d", nBytesReceived);
 
 			// Echo the buffer back to the sender
-			i_send_result = send(client_socket, recvbuf, i_result, 0);
-			if (i_send_result == SOCKET_ERROR) {
-				log_error("main: send failed with error: %d\n", WSAGetLastError());
-				closesocket(client_socket);
+
+			log_debug("main: Echoing what we received right back to the client...");
+
+			nBytesSent = send(ClientSocket, recvbuf, nBytesReceived, 0);
+
+			log_debug("main: Checking for errors...");
+
+			if (nBytesSent == SOCKET_ERROR) {
+				log_error("main: send failed with error: %d", WSAGetLastError());
+				CloseSocket(ClientSocket);
 				WSACleanup();
 				return 1;
 			}
-			log_debug("main: Bytes sent: %d\n", i_send_result);
+
+			log_debug("main: The send operation completed successfully.");
+
+			log_debug("main: Bytes sent: %d", nBytesSent);
 		}
-		else if (i_result == 0)
-			log_debug("main: Connection closing...\n");
-		else {
-			log_error("main: recv failed with error: %d\n", WSAGetLastError());
-			closesocket(client_socket);
+		else if (nBytesReceived == 0)
+		{
+			log_debug("main: The nBytesReceived variable has a value of zero.");
+
+			log_debug("main: Done receiving information.  Connection closing...");
+		}
+		else 
+		{
+			log_debug("main: nBytesReceived = %d", nBytesReceived);
+
+			log_error("main: recv failed with error: %d", WSAGetLastError());
+			CloseSocket(ClientSocket);
 			WSACleanup();
 			return 1;
 		}
-	} while (i_result > 0);
+	} while (nBytesReceived > 0);
 
-	// shutdown the connection since we're done
-	i_result = shutdown(client_socket, SD_SEND);
-	if (i_result == SOCKET_ERROR) {
-		log_error("main: shutdown failed with error: %d\n", WSAGetLastError());
-		closesocket(client_socket);
-		WSACleanup();
-		return 1;
-	}
+	log_debug("main: We are done with the recv loop because the number bytes received dropped to something nonpositive.");
+
+	log_debug("main: Shutting down the sending portion of the client connection socket...");
+
+	if (!Shutdown(ClientSocket, SD_SEND, &nResult))
+		return nResult;
+
+	log_debug("main: The sending endpoint of the client connection has been shut down.");
 
 	log_debug("main: Freeing system resources...");
 
 	// cleanup
-	closesocket(client_socket);
+	CloseSocket(ClientSocket);
 	WSACleanup();
 
 	log_debug("main: The client socket and additional system resources have been freed.");
 
-	log_debug("main: i_result = %d", i_result);
+	log_debug("main: nResult = %d", nResult);
 
 	log_debug("main: Done.");
 
-	return i_result;
+	return nResult;
 }
