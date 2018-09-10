@@ -16,7 +16,7 @@
 #define DEFAULT_BUFLEN 512
 #define DEFAULT_PORT "27015"
 
-int _cdecl main(int argc, char *argv[]) {
+int _cdecl main(const int argc, char *argv[]) {
 	WSADATA wsa_data;
 	auto connect_socket = INVALID_SOCKET;
 	struct addrinfo *result = nullptr,
