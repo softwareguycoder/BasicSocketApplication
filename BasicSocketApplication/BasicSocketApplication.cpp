@@ -11,5 +11,16 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 int main() {
-	return 0;
+	WSADATA wsaData;
+
+	int iResult = 0;
+
+	// Initialize Winsock
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) {
+		printf("WSAStartup failed: %d\n", iResult);
+		return 1;
+	}
+
+	return iResult;
 }
