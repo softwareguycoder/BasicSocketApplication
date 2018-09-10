@@ -13,7 +13,7 @@
 #include <cstdio>
 
 extern "C" {
-	#include "JQR.Debug.Core.h"
+#include "JQR.Debug.Core.h"
 }
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
@@ -30,7 +30,7 @@ int _cdecl main(const int argc, char *argv[]) {
 	WSADATA wsa_data;
 	auto connect_socket = INVALID_SOCKET;
 	struct addrinfo *result = nullptr,
-	                hints{};
+		hints{};
 	const auto sendbuf = "this is a test";
 	char recvbuf[DEFAULT_BUFLEN];
 	const auto recvbuflen = DEFAULT_BUFLEN;
@@ -112,7 +112,6 @@ int _cdecl main(const int argc, char *argv[]) {
 
 	// Receive until the peer closes the connection
 	do {
-
 		i_result = recv(connect_socket, recvbuf, recvbuflen, 0);
 		if (i_result > 0)
 			printf("Bytes received: %d\n", i_result);
@@ -120,7 +119,6 @@ int _cdecl main(const int argc, char *argv[]) {
 			printf("Connection closed\n");
 		else
 			printf("recv failed with error: %d\n", WSAGetLastError());
-
 	} while (i_result > 0);
 
 	// cleanup
