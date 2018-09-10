@@ -64,5 +64,14 @@ int _cdecl main() {
 
 	freeaddrinfo(result);
 
+	if (listen(ListenSocket, SOMAXCONN) == SOCKET_ERROR) {
+		printf("Listen failed with error: %ld\n", WSAGetLastError());
+		closesocket(ListenSocket);
+		WSACleanup();
+		return 1;
+	}
+
+
+
 	return iResult;
 }
