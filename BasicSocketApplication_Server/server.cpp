@@ -2,14 +2,7 @@
 // brush up on Windows Sockets programming concepts.
 //
 
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
-#endif
-
-#include <windows.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
-#include <cstdio>
+#include "server.h"
 
 extern "C" {
 #include "JQR.Debug.Core.h"
@@ -17,13 +10,44 @@ extern "C" {
 
 #pragma comment(lib, "Ws2_32.lib")
 
-#define DEFAULT_PORT "27015"
-#define DEFAULT_BUFLEN 512
+bool WINAPI initialize_winsock(LPWSADATA p_wsa_data, int* p_result)
+{
+	log_debug("In initialize_winsock");
+
+	log_debug("initialize_winsock: Checking inputs...");
+
+	// Input validation -- both the passed pointers must have valid addresses
+	if (p_wsa_data == nullptr)
+		return false;
+
+	if (p_result == nullptr)
+		return false;
+
+	log_debug("initialize_winsock: Input checks passed.  Calling WSAStartup...");
+
+	*p_result = WSAStartup(MAKEWORD(2, 2), p_wsa_data);
+	if (*p_result != 0) {
+		log_error("main: WSAStartup failed: %d", *p_result);
+
+		log_debug("main: Done.");
+
+		return false;
+	}
+
+	log_debug("initialize_winsock: The operation completed successfully.");
+
+	log_debug("initialize_winsock: Done.");
+
+	return true;
+}
 
 int _cdecl main() {
 	log_debug("In main");
 
+	auto i_result = 0;
+
 	WSADATA wsa_data;
+	ZeroMemory(&wsa_data, sizeof(wsa_data));
 
 	auto listen_socket = INVALID_SOCKET;
 	auto client_socket = INVALID_SOCKET;
@@ -35,15 +59,12 @@ int _cdecl main() {
 	char recvbuf[DEFAULT_BUFLEN];
 	const auto recvbuflen = DEFAULT_BUFLEN;
 
-	// Initialize Winsock
-	auto i_result = WSAStartup(MAKEWORD(2, 2), &wsa_data);
-	if (i_result != 0) {
-		log_error("main: WSAStartup failed: %d\n", i_result);
+	log_debug("main: Initializing the Winsock stack...");
 
-		log_debug("main: Done.");
+	if (!initialize_winsock(&wsa_data, &i_result))
+		return i_result;
 
-		return 1;
-	}
+	log_debug("main: Winsock stack has been initialized.");
 
 	ZeroMemory(&hints, sizeof(hints));
 	hints.ai_family = AF_INET;

@@ -37,7 +37,7 @@ int _cdecl main(const int argc, char *argv[]) {
 
 	// Validate the parameters
 	if (argc != 2) {
-		printf("usage: %s server-name\n", argv[0]);
+		printf("usage: BasicSocketApplication_Client.exe servername\n");
 		return 1;
 	}
 
