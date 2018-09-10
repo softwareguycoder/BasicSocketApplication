@@ -11,12 +11,15 @@
 #pragma comment(lib, "Ws2_32.lib")
 
 #define DEFAULT_PORT "27015"
+#define DEFAULT_BUFLEN 512
 
 int _cdecl main() {
 	WSADATA wsaData;
 	struct addrinfo *result = NULL, *ptr = NULL, hints;
 
-	int iResult = 0;
+	char recvbuf[DEFAULT_BUFLEN];
+	int iResult = 0, iSendResult = 0;
+	int recvbuflen = DEFAULT_BUFLEN;
 
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -81,6 +84,33 @@ int _cdecl main() {
 		return 1;
 	}
 
+	// Receive until the peer shuts down the connection
+	do {
+
+		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+		if (iResult > 0) {
+			printf("Bytes received: %d\n", iResult);
+
+			// Echo the buffer back to the sender
+			iSendResult = send(ClientSocket, recvbuf, iResult, 0);
+			if (iSendResult == SOCKET_ERROR) {
+				printf("send failed: %d\n", WSAGetLastError());
+				closesocket(ClientSocket);
+				WSACleanup();
+				return 1;
+			}
+			printf("Bytes sent: %d\n", iSendResult);
+		}
+		else if (iResult == 0)
+			printf("Connection closing...\n");
+		else {
+			printf("recv failed: %d\n", WSAGetLastError());
+			closesocket(ClientSocket);
+			WSACleanup();
+			return 1;
+		}
+
+	} while (iResult > 0);
 
 	return iResult;
 }
