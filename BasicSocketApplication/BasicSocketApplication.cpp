@@ -84,9 +84,11 @@ int _cdecl main() {
 		return 1;
 	}
 
+	// No longer need server socket
+	closesocket(ListenSocket);
+
 	// Receive until the peer shuts down the connection
 	do {
-
 		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 		if (iResult > 0) {
 			printf("Bytes received: %d\n", iResult);
@@ -109,7 +111,6 @@ int _cdecl main() {
 			WSACleanup();
 			return 1;
 		}
-
 	} while (iResult > 0);
 
 	// shutdown the send half of the connection since no more data will be sent
