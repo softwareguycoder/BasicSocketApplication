@@ -112,5 +112,18 @@ int _cdecl main() {
 
 	} while (iResult > 0);
 
+	// shutdown the send half of the connection since no more data will be sent
+	iResult = shutdown(ClientSocket, SD_SEND);
+	if (iResult == SOCKET_ERROR) {
+		printf("shutdown failed: %d\n", WSAGetLastError());
+		closesocket(ClientSocket);
+		WSACleanup();
+		return 1;
+	}
+
+	// cleanup
+	closesocket(ClientSocket);
+	WSACleanup();
+
 	return iResult;
 }
