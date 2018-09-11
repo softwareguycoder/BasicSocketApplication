@@ -130,8 +130,14 @@
     <ClCompile Include="client.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\JQR.Conversion.Core\JQR.Conversion.Core\JQR.Conversion.Core.vcxproj">
+      <Project>{4f3b499a-40f0-4e55-9e04-706807561c69}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\JQR.Debug.Core\JQR.Debug.Core\JQR.Debug.Core.vcxproj">
       <Project>{a58a08a4-f0fa-41f5-83c0-816d5cc4613d}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\JQR.Inetsock.Core\JQR.Inetsock.Core\JQR.Inetsock.Core.vcxproj">
+      <Project>{06f2c92a-b2b1-4828-8511-98940155a353}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

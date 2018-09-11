@@ -362,7 +362,12 @@ BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 	// any error codes.
 	if (pResult == NULL)
 	{
+		log_error("ResolveServerAddress: The pResult pointer must point to a valid address.  Stopping.");
+
+		log_debug("ResolveServerAddress: Done.");
+
 		WSACleanup();
+
 		return FALSE;
 	}
 
