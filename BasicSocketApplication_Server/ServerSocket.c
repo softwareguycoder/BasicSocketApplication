@@ -1,8 +1,6 @@
-#include "Socket.h"
+#include "ServerSocket.h"
 
-extern "C" {
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
-}
 
 INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 {
@@ -10,7 +8,7 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 
 	log_debug("Receive: Checking inputs...");
 
-	auto nResult = SOCKET_ERROR;
+	int nResult = SOCKET_ERROR;
 
 	if (socket == INVALID_SOCKET)
 	{
@@ -27,7 +25,7 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 
 	log_debug("Receive: Checking whether the 'szBuffer' parameter has a valid storage address...");
 
-	if (szBuffer == nullptr)
+	if (szBuffer == NULL)
 	{
 		log_error("Receive: The 'szBuffer' parameter must point to already-allocated storage.  Stopping.");
 
@@ -66,7 +64,7 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 	return nResult;
 }
 
-BOOL WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
+bool WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 {
 	log_debug("In Shutdown");
 
@@ -100,7 +98,7 @@ BOOL WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 
 	log_debug("Shutdown: The nHow parameter has a valid value.");
 
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		log_error("Shutdown: The pResult parameter is required to have a non-NULL value but it has a NULL value.  Stopping.");
 
@@ -159,7 +157,7 @@ VOID WINAPI CloseSocket(SOCKET socket)
 	log_debug("CloseSocket: Done.");
 }
 
-BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientSocket, PINT pResult)
+bool WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientSocket, PINT pResult)
 {
 	log_debug("In AcceptClientConnection");
 
@@ -167,19 +165,19 @@ BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
 
 	// Input validation -- all of the passed pointers must have valid addresses
 
-	if (pListenSocket == nullptr)
+	if (pListenSocket == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pClientSocket == nullptr)
+	if (pClientSocket == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		WSACleanup();
 		return false;
@@ -192,7 +190,7 @@ BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
 	log_debug("AcceptClientConnection: Calling the 'accept' function to accept a new client connection...");
 
 	// Accept a client socket
-	*pClientSocket = accept(*pListenSocket, nullptr, nullptr);
+	*pClientSocket = accept(*pListenSocket, NULL, NULL);
 	if (*pClientSocket == INVALID_SOCKET) {
 		log_error("main: accept failed: %d\n", WSAGetLastError());
 		closesocket(*pListenSocket);
@@ -211,7 +209,7 @@ BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
 	return true;
 }
 
-BOOL WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
+bool WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
 {
 	log_debug("In Listen");
 
@@ -219,13 +217,13 @@ BOOL WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
 
 	// Input validation -- all of the pointers passed to this function must refer
 	// to valid addresses
-	if (pListenSocket == nullptr)
+	if (pListenSocket == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		WSACleanup();
 		return false;
@@ -252,7 +250,7 @@ BOOL WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
 	return true;
 }
 
-BOOL WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, PINT pResult)
+bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, PINT pResult)
 {
 	log_debug("In BindServerSocket");
 
@@ -260,19 +258,19 @@ BOOL WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
 
 	// Input validation -- all of the pointers passed to this function must refer
 	// to valid addresses
-	if (pListenSocket == nullptr)
+	if (pListenSocket == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pAddrInfo == nullptr)
+	if (pAddrInfo == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		WSACleanup();
 		return false;
@@ -283,7 +281,7 @@ BOOL WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
 	*pResult = 0;
 
 	// Call the bind function to associate this TCP socket with the server endpoint
-	*pResult = bind(*pListenSocket, pAddrInfo->ai_addr, static_cast<int>(pAddrInfo->ai_addrlen));
+	*pResult = bind(*pListenSocket, pAddrInfo->ai_addr, (int)(pAddrInfo->ai_addrlen));
 	if (*pResult == SOCKET_ERROR) {
 		log_error("main: bind failed with error: %d\n", WSAGetLastError());
 		freeaddrinfo(pAddrInfo);
@@ -308,26 +306,26 @@ BOOL WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
 	return true;
 }
 
-BOOL WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT pResult)
+bool WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT pResult)
 {
 	log_debug("In CreateServerSocket");
 
 	log_debug("CreateServerSocket: Checking inputs...");
 
 	// Input validation -- all of the passed pointers must have valid addresses
-	if (pAddrInfo == nullptr)
+	if (pAddrInfo == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pListenSocket == nullptr)
+	if (pListenSocket == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		WSACleanup();
 		return false;
@@ -353,7 +351,7 @@ BOOL WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT
 	return true;
 }
 
-BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT pResult)
+bool WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT pResult)
 {
 	log_debug("In ResolveServerAddress");
 
@@ -361,7 +359,7 @@ BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 
 	// Input validation -- pResult must contain a valid address of an integer that gets
 	// any error codes.
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		WSACleanup();
 		return false;
@@ -371,10 +369,10 @@ BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 
 	// Initialize the ppAddressInfo pointer to start out not pointing
 	// to anything in particular
-	*ppAddressInfo = nullptr;
+	*ppAddressInfo = NULL;
 
 	// Set up a structure of hints
-	struct addrinfo hints {};
+	struct addrinfo hints;
 
 	ZeroMemory(&hints, sizeof(hints));
 	hints.ai_family = AF_INET;
@@ -383,7 +381,7 @@ BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 	hints.ai_flags = AI_PASSIVE;
 
 	// Resolve the server address and port
-	*pResult = getaddrinfo(nullptr, DEFAULT_PORT, &hints, ppAddressInfo);
+	*pResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, ppAddressInfo);
 	if (*pResult != 0) {
 		log_error("ResolveServerAddress: getaddrinfo failed with error: %d\n", WSAGetLastError());
 		WSACleanup();
@@ -397,20 +395,20 @@ BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 	return true;
 }
 
-BOOL WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult)
+bool WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult)
 {
 	log_debug("In InitializeWinsock");
 
 	log_debug("InitializeWinsock: Checking inputs...");
 
 	// Input validation -- both the passed pointers must have valid addresses
-	if (lpWSADATA == nullptr)
+	if (lpWSADATA == NULL)
 	{
 		WSACleanup();
 		return false;
 	}
 
-	if (pResult == nullptr)
+	if (pResult == NULL)
 	{
 		WSACleanup();
 		return false;

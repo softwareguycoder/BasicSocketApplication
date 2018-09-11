@@ -2,11 +2,9 @@
 // brush up on Windows Sockets programming concepts.
 //
 
-#include "Socket.h"
+#include "ServerSocket.h"
 
-extern "C" {
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
-}
 
 #pragma comment(lib, "Ws2_32.lib")
 
@@ -14,15 +12,15 @@ int _cdecl main() {
 	log_debug("In main");
 
 	// Default return value in case something goes sideways
-	auto nResult = 1;
+	int nResult = 1;
 
 	WSADATA wsaData;
 	ZeroMemory(&wsaData, sizeof(wsaData));
 
-	auto ListenSocket = INVALID_SOCKET;
-	auto ClientSocket = INVALID_SOCKET;
+	SOCKET ListenSocket = INVALID_SOCKET;
+	SOCKET ClientSocket = INVALID_SOCKET;
 
-	PADDRINFOA pAddrInfo = nullptr;
+	PADDRINFOA pAddrInfo = NULL;
 
 	char recvbuf[DEFAULT_BUFLEN];
 
@@ -77,7 +75,7 @@ int _cdecl main() {
 	log_debug("main: Attempting to receive data...");
 
 	// ReSharper disable CppInitializedValueIsAlwaysRewritten
-	auto nBytesReceived = 0;
+	int nBytesReceived = 0;
 	// ReSharper restore CppInitializedValueIsAlwaysRewritten
 
 	// Receive until the peer shuts down the connection
@@ -97,7 +95,7 @@ int _cdecl main() {
 
 			log_debug("main: Echoing what we received right back to the client...");
 
-			const auto nBytesSent = send(ClientSocket, recvbuf, nBytesReceived, 0);
+			const int nBytesSent = send(ClientSocket, recvbuf, nBytesReceived, 0);
 
 			log_debug("main: Checking for errors...");
 

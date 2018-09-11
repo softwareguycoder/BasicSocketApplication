@@ -15,15 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="server.cpp">
+    <ClCompile Include="server.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Socket.cpp">
+    <ClCompile Include="ServerSocket.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Socket.h">
+    <ClInclude Include="ServerSocket.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

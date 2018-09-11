@@ -128,8 +128,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="server.cpp" />
-    <ClCompile Include="Socket.cpp" />
+    <ClCompile Include="server.c" />
+    <ClCompile Include="ServerSocket.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\JQR.Debug.Core\JQR.Debug.Core\JQR.Debug.Core.vcxproj">
@@ -138,7 +138,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Socket.h" />
+    <ClInclude Include="ServerSocket.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
