@@ -3,7 +3,7 @@
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
 #include "../../JQR.Inetsock.Core/JQR.Inetsock.Core/SocketCommon.h"
 
-INT WINAPI Receive(const SOCKET socket, PSTR pszBuffer, const INT nLength, const INT flags)
+INT WINAPI Receive(const SOCKET socket, PSTR pszBuffer, const INT nLength, const INT nFlags)
 {
 	log_debug("In Receive");
 
@@ -56,7 +56,7 @@ INT WINAPI Receive(const SOCKET socket, PSTR pszBuffer, const INT nLength, const
 
 	log_debug("Receive: Attempting to receive data...");
 
-	nResult = recv(socket, pszBuffer, nLength, flags);
+	nResult = recv(socket, pszBuffer, nLength, nFlags);
 
 	log_debug("Receive: nResult = %d", nResult);
 

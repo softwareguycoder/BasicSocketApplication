@@ -77,11 +77,11 @@ BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
  * \param socket Handle of a socket that represents a remote endpoint from which to receive data.
  * \param pszBuffer Address of a char buffer with storage for the received data.
  * \param nLength Size of the buffer, in bytes.
- * \param flags Flags to be used with the recv() function.  Should be set to zero in most use
+ * \param nFlags Flags to be used with the recv() function.  Should be set to zero in most use
  * cases.
  * \return Number of bytes received; zero if done, and SOCKET_ERROR if an error occurred.
  */
-INT WINAPI Receive(const SOCKET socket, PSTR pszBuffer, const INT nLength, const INT flags);
+INT WINAPI Receive(const SOCKET socket, PSTR pszBuffer, const INT nLength, const INT nFlags);
 
 /**
  * \brief Closes the specified socket handle and frees any system resources associated with it.
