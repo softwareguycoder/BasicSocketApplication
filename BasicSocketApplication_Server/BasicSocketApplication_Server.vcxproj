@@ -136,6 +136,9 @@
       <Project>{a58a08a4-f0fa-41f5-83c0-816d5cc4613d}</Project>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
+    <ProjectReference Include="..\..\JQR.Inetsock.Core\JQR.Inetsock.Core\JQR.Inetsock.Core.vcxproj">
+      <Project>{06f2c92a-b2b1-4828-8511-98940155a353}</Project>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ServerSocket.h" />

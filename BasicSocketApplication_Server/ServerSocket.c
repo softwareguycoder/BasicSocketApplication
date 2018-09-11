@@ -1,6 +1,7 @@
 #include "ServerSocket.h"
 
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
+#include "../../JQR.Inetsock.Core/JQR.Inetsock.Core/SocketCommon.h"
 
 INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 {
@@ -64,7 +65,7 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 	return nResult;
 }
 
-bool WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
+BOOL WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 {
 	log_debug("In Shutdown");
 
@@ -78,7 +79,7 @@ bool WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 
 		WSACleanup();
 
-		return false;
+		return FALSE;
 	}
 
 	log_debug("Shutdown: The socket handle passed was valid.");
@@ -91,7 +92,7 @@ bool WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 
 		WSACleanup();
 
-		return false;
+		return FALSE;
 	}
 
 	log_debug("Shutdown: nHow = %d", nHow);
@@ -106,7 +107,7 @@ bool WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 
 		WSACleanup();
 
-		return false;
+		return FALSE;
 	}
 
 	log_debug("Shutdown: Input checks passed.  Calling the 'shutdown' function...");
@@ -121,14 +122,14 @@ bool WINAPI Shutdown(const SOCKET socket, INT nHow, PINT pResult)
 
 		log_debug("Shutdown: Done.");
 
-		return false;
+		return FALSE;
 	}
 
 	log_debug("Shutdown: The operation completed successfully.");
 
 	log_debug("Shutdown: Done.");
 
-	return true;
+	return TRUE;
 }
 
 VOID WINAPI CloseSocket(SOCKET socket)
@@ -157,7 +158,7 @@ VOID WINAPI CloseSocket(SOCKET socket)
 	log_debug("CloseSocket: Done.");
 }
 
-bool WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientSocket, PINT pResult)
+BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientSocket, PINT pResult)
 {
 	log_debug("In AcceptClientConnection");
 
@@ -168,19 +169,19 @@ bool WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
 	if (pListenSocket == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pClientSocket == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pResult == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("AcceptClientConnection: Input checks passed.");
@@ -196,7 +197,7 @@ bool WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
 		closesocket(*pListenSocket);
 		WSACleanup();
 		*pResult = 1;
-		return false;
+		return FALSE;
 	}
 
 	log_debug("AcceptClientConnection: A new client has connected to us.");
@@ -206,10 +207,10 @@ bool WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
 	log_debug("AcceptClientConnection: Done.");
 
 	// we now have a new client connection
-	return true;
+	return TRUE;
 }
 
-bool WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
+BOOL WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
 {
 	log_debug("In Listen");
 
@@ -220,13 +221,13 @@ bool WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
 	if (pListenSocket == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pResult == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("Listen: Input checks passed.  Calling the 'listen' function...");
@@ -240,17 +241,17 @@ bool WINAPI Listen(const SOCKET* pListenSocket, PINT pResult)
 		closesocket(*pListenSocket);
 		WSACleanup();
 		*pResult = 1;
-		return false;
+		return FALSE;
 	}
 
 	log_debug("Listen: The operation completed successfully.");
 
 	log_debug("Listen: Done.");
 
-	return true;
+	return TRUE;
 }
 
-bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, PINT pResult)
+BOOL WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, PINT pResult)
 {
 	log_debug("In BindServerSocket");
 
@@ -261,19 +262,19 @@ bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
 	if (pListenSocket == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pAddrInfo == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pResult == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("BindServerSocket: Input checks passed.  Calling the 'bind' function...");
@@ -288,7 +289,7 @@ bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
 		closesocket(*pListenSocket);
 		WSACleanup();
 		*pResult = 1;
-		return false;
+		return FALSE;
 	}
 
 	log_debug("BindServerSocket: The operation completed successfully.");
@@ -303,10 +304,10 @@ bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
 
 	log_debug("BindServerSocket: Done.");
 
-	return true;
+	return TRUE;
 }
 
-bool WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT pResult)
+BOOL WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT pResult)
 {
 	log_debug("In CreateServerSocket");
 
@@ -316,19 +317,19 @@ bool WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT
 	if (pAddrInfo == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pListenSocket == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pResult == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("CreateServerSocket: Input checks passed.  Calling the socket function...");
@@ -341,17 +342,17 @@ bool WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET *pListenSocket, PINT
 		freeaddrinfo(pAddrInfo);
 		WSACleanup();
 		*pResult = 1;
-		return false;
+		return FALSE;
 	}
 
 	log_debug("CreateServerSocket: The operation completed successfully.");
 
 	log_debug("CreateServerSocket: Done.");
 
-	return true;
+	return TRUE;
 }
 
-bool WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT pResult)
+BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT pResult)
 {
 	log_debug("In ResolveServerAddress");
 
@@ -362,7 +363,7 @@ bool WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 	if (pResult == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("ResolveServerAddress: Input checks passed.  Calling getaddrinfo...");
@@ -385,17 +386,17 @@ bool WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
 	if (*pResult != 0) {
 		log_error("ResolveServerAddress: getaddrinfo failed with error: %d\n", WSAGetLastError());
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("ResolveServerAddress: The operation completed successfully.");
 
 	log_debug("ResolveServerAddress: Done.");
 
-	return true;
+	return TRUE;
 }
 
-bool WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult)
+BOOL WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult)
 {
 	log_debug("In InitializeWinsock");
 
@@ -405,13 +406,13 @@ bool WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult)
 	if (lpWSADATA == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	if (pResult == NULL)
 	{
 		WSACleanup();
-		return false;
+		return FALSE;
 	}
 
 	log_debug("InitializeWinsock: Input checks passed.  Calling WSAStartup...");
@@ -424,12 +425,12 @@ bool WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult)
 
 		WSACleanup();
 
-		return false;
+		return FALSE;
 	}
 
 	log_debug("InitializeWinsock: The operation completed successfully.");
 
 	log_debug("InitializeWinsock: Done.");
 
-	return true;
+	return TRUE;
 }

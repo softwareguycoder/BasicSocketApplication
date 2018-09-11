@@ -5,6 +5,7 @@
 #include "ServerSocket.h"
 
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
+#include "../../JQR.Inetsock.Core/JQR.Inetsock.Core/SocketCommon.h"
 
 #pragma comment(lib, "Ws2_32.lib")
 

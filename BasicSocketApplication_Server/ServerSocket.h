@@ -11,21 +11,11 @@
 #define DEFAULT_PORT "27015"
 #define DEFAULT_BUFLEN 512
 
-/* C has no 'bool' type per se, and I want to utilize boolean names in 
+/* C has no 'BOOL' type per se, and I want to utilize BOOLean names in 
  * this code, so the thinking is to declare an enum here and then name it
- * 'bool' so I can utilize the familiar labels 'false' and 'true' to make 
+ * 'BOOL' so I can utilize the familiar labels 'false' and 'true' to make 
  * the code more readable. */
-typedef enum{false,true} bool;
-
-/**
- * \brief Calls the WSAStartup Windows API function in order to initialize the Microsoft TCP/IP stack.
- * \param lpWSADATA Address of storage that receives an initialized WSADATA structure.
- * \param pResult Address of storage that receives the integer result of the system call.
- * \return True if the operation was successful; false otherwise.  If false, pResult
- * will point to an error code which is an integer value other than zero.
- * \remarks This function must be called prior to any other Winsock calls!
- */
-bool WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult);
+//typedef enum{false,true} bool;
 
 /**
  * \brief Resolves the server IP address and port using the getaddrinfo Windows API function.
@@ -35,7 +25,7 @@ bool WINAPI InitializeWinsock(LPWSADATA lpWSADATA, PINT pResult);
  * \return True if the operation was successful; false otherwise.  If false, pResult
  * will point to an error code which is an integer value other than zero.
  */
-bool WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT pResult);
+BOOL WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT pResult);
 
 /**
  * \brief Creates a new server socket endpoint to be used for listening for connections.
@@ -45,7 +35,7 @@ bool WINAPI ResolveServerAddress(PCSTR pszPort, PADDRINFOA* ppAddressInfo, PINT 
  * \return True if the operation was successful; false otherwise.  If false, pResult
  * will point to an error code which is an integer value other than zero.
  */
-bool WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET* pListenSocket, PINT pResult);
+BOOL WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET* pListenSocket, PINT pResult);
 
 /**
  * \brief Binds a server socket to the endpoint used for listening for connections from clients.
@@ -55,7 +45,7 @@ bool WINAPI CreateServerSocket(PADDRINFOA pAddrInfo, SOCKET* pListenSocket, PINT
  * \return True if the operation was successful; false otherwise.  If false, pResult
  * will point to an error code which is an integer value other than zero.
  */
-bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, PINT pResult);
+BOOL WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, PINT pResult);
 
 /**
  * \brief Listens for connections to the listening socket.  Prepares the server so accept() can be called.
@@ -65,7 +55,7 @@ bool WINAPI BindServerSocket(const SOCKET* pListenSocket, PADDRINFOA pAddrInfo, 
  * will point to an error code which is an integer value other than zero.
  * \remarks The BindServerSocket function must be called prior to calling this function.
  */
-bool WINAPI Listen(const SOCKET* pListenSocket, PINT pResult);
+BOOL WINAPI Listen(const SOCKET* pListenSocket, PINT pResult);
 
 /**
  * \brief Accepts a new incoming client connection.
@@ -79,7 +69,7 @@ bool WINAPI Listen(const SOCKET* pListenSocket, PINT pResult);
  * calling thread's execution until a client actually has connected to the server.  Once a connection
  * has come in, returns a reference to a SOCKET that represents the connection to the client.
  */
-bool WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientSocket, PINT pResult);
+BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientSocket, PINT pResult);
 
 /**
  * \brief Attempts to receive data from a remote endpoint.  Stores the received data, if any, in
@@ -106,6 +96,6 @@ VOID WINAPI CloseSocket(SOCKET socket);
  * \return True if the operation was successful; false otherwise.  If false, pResult
  * will point to an error code which is an integer value other than zero.
  */
-bool WINAPI Shutdown(SOCKET socket, INT nHow, PINT pResult);
+BOOL WINAPI Shutdown(SOCKET socket, INT nHow, PINT pResult);
 
 #endif //__SERVER_SOCKET_H__
