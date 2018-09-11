@@ -13,7 +13,7 @@
 #include <cstdio>
 
 extern "C" {
-#include "JQR.Debug.Core.h"
+#include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
 }
 
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib

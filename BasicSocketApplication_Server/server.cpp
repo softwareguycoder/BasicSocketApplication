@@ -5,7 +5,7 @@
 #include "Socket.h"
 
 extern "C" {
-#include "JQR.Debug.Core.h"
+#include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
 }
 
 #pragma comment(lib, "Ws2_32.lib")

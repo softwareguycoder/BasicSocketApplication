@@ -1,10 +1,10 @@
 #include "Socket.h"
 
 extern "C" {
-#include "JQR.Debug.Core.h"
+#include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
 }
 
-INT WINAPI Receive(SOCKET socket, PSTR szBuffer, const INT nLength)
+INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 {
 	log_debug("In Receive");
 

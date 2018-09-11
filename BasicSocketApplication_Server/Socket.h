@@ -7,7 +7,6 @@
 
 #include <windows.h>
 #include <ws2tcpip.h>
-#include <cstdio>
 
 #define DEFAULT_PORT "27015"
 #define DEFAULT_BUFLEN 512
@@ -84,7 +83,7 @@ BOOL WINAPI AcceptClientConnection(const SOCKET* pListenSocket, SOCKET* pClientS
  * \param nLength Size of the buffer, in bytes.
  * \return Number of bytes received; zero if done, and SOCKET_ERROR if an error occurred.
  */
-INT WINAPI Receive(SOCKET socket, PSTR szBuffer, const INT nLength);
+INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength);
 
 /**
  * \brief Closes the specified socket handle and frees any system resources associated with it.
