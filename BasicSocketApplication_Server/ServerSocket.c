@@ -3,7 +3,7 @@
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
 #include "../../JQR.Inetsock.Core/JQR.Inetsock.Core/SocketCommon.h"
 
-INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
+INT WINAPI Receive(const SOCKET socket, PSTR pszBuffer, const INT nLength)
 {
 	log_debug("In Receive");
 
@@ -24,11 +24,11 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 
 	log_debug("Receive: A valid socket handle value has been passed.");
 
-	log_debug("Receive: Checking whether the 'szBuffer' parameter has a valid storage address...");
+	log_debug("Receive: Checking whether the 'pszBuffer' parameter has a valid storage address...");
 
-	if (szBuffer == NULL)
+	if (pszBuffer == NULL)
 	{
-		log_error("Receive: The 'szBuffer' parameter must point to already-allocated storage.  Stopping.");
+		log_error("Receive: The 'pszBuffer' parameter must point to already-allocated storage.  Stopping.");
 
 		WSASetLastError(WSAEINVAL);
 
@@ -37,13 +37,13 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 		return nResult;
 	}
 
-	log_debug("Receive: The 'szBuffer' parameter references a valid storage address.");
+	log_debug("Receive: The 'pszBuffer' parameter references a valid storage address.");
 
 	log_debug("Receive: Checking whether nLength is bigger than zero...");
 
 	if (nLength <= 0)
 	{
-		log_error("Receive: Attempting to receive into a szBuffer that is a nonpositive number of bytes long.  Stopping.");
+		log_error("Receive: Attempting to receive into a pszBuffer that is a nonpositive number of bytes long.  Stopping.");
 
 		WSASetLastError(WSAEINVAL);
 
@@ -56,7 +56,7 @@ INT WINAPI Receive(const SOCKET socket, PSTR szBuffer, const INT nLength)
 
 	log_debug("Receive: Attempting to receive data...");
 
-	nResult = recv(socket, szBuffer, nLength, 0);
+	nResult = recv(socket, pszBuffer, nLength, 0);
 
 	log_debug("Receive: nResult = %d", nResult);
 
