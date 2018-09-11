@@ -2,9 +2,8 @@
 // brush up on Windows Sockets programming concepts.
 //
 
-#include "ServerSocket.h"
-
 #include "../../JQR.Debug.Core/JQR.Debug.Core/JQR.Debug.Core.h"
+#include "../../JQR.Inetsock.Core/JQR.Inetsock.Core/ServerSocket.h"
 #include "../../JQR.Inetsock.Core/JQR.Inetsock.Core/SocketCommon.h"
 
 #pragma comment(lib, "Ws2_32.lib")
@@ -83,7 +82,7 @@ int _cdecl main() {
 	do {
 		log_debug("main: Calling Receive function...");
 
-		nBytesReceived = Receive(ClientSocket, recvbuf, DEFAULT_BUFLEN);
+		nBytesReceived = Receive(ClientSocket, recvbuf, DEFAULT_BUFLEN, 0);
 
 		log_debug("main: Result of 'Receive' function call: %d", nBytesReceived);
 

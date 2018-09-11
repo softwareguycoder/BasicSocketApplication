@@ -129,7 +129,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="server.c" />
-    <ClCompile Include="ServerSocket.c" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\JQR.Debug.Core\JQR.Debug.Core\JQR.Debug.Core.vcxproj">
@@ -139,9 +138,6 @@
     <ProjectReference Include="..\..\JQR.Inetsock.Core\JQR.Inetsock.Core\JQR.Inetsock.Core.vcxproj">
       <Project>{06f2c92a-b2b1-4828-8511-98940155a353}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="ServerSocket.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
